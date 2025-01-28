@@ -24,4 +24,6 @@ class Algebra {
                   char attrOne[ATTR_SIZE], char attrTwo[ATTR_SIZE]);
 };
 
+bool isNumber(char *str);
+
 #endif  // NITCBASE_ALGEBRA_H

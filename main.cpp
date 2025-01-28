@@ -1,7 +1,7 @@
 #include "Buffer/StaticBuffer.h"
 #include "Cache/OpenRelTable.h"
 #include "Disk_Class/Disk.h"
-//#include "FrontendInterface/FrontendInterface.h"
+#include "FrontendInterface/FrontendInterface.h"
 #include <cstring>
 #include <iostream>
 
@@ -73,37 +73,11 @@ void printAttributeCatalog() {
   }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     Disk disk_run;
     StaticBuffer bufferCache;
     OpenRelTable cache;
 
-  //printAttributeCatalog();
-
-  //updateAttributeName("Student", "Name", "StudentName");
-
-  //printAttributeCatalog();
-
-
-    for (int relId = 0; relId <= 1; relId++) {
-		// i = 0 -> RELCAT_RELID
-		// i = 1 -> ATTRCAT_RELID
-
-		RelCatEntry relCatBuffer;
-		RelCacheTable::getRelCatEntry(relId, &relCatBuffer);
-
-		printf ("Relation: %s\n", relCatBuffer.relName);
-
-		for (int attrIndex = 0; attrIndex < relCatBuffer.numAttrs; attrIndex++) {
-			AttrCatEntry attrCatBuffer;
-			AttrCacheTable::getAttrCatEntry(relId, attrIndex, &attrCatBuffer);
-
-			const char *attrType = attrCatBuffer.attrType == NUMBER ? "NUM" : "STR";
-			printf ("    %s: %s\n", attrCatBuffer.attrName, attrType);
-		}
-		printf("\n");
-	}
-
-	return 0;
+    return FrontendInterface::handleFrontend(argc, argv);
     
 }

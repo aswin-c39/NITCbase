@@ -93,3 +93,28 @@ int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char **buffPtr) {
 
     return SUCCESS;
 }
+
+int RecBuffer::getSlotMap(unsigned char *slotMap) {
+    unsigned char *bufferPtr;
+
+    int ret = loadBlockAndGetBufferPtr(&bufferPtr); 
+    if(ret != SUCCESS) 
+        return ret;
+    
+    struct HeadInfo head;
+
+    BlockBuffer::getHeader(&head);
+
+    int slotCount = head.numSlots;
+
+    unsigned char *slotMapinBuffer = bufferPtr + HEADER_SIZE;
+    memcpy(slotMap, slotMapinBuffer, slotCount);
+    return SUCCESS;
+}
+
+int compareAttrs(Attribute attr1, Attribute attr2, int attrType) {
+    if(attrType == NUMBER) 
+        return attr1.nVal < attr2.nVal ? -1 : (attr1.nVal == attr2.nVal ? 0 : 1) ;
+    else 
+        return strcmp(attr1.sVal, attr2.sVal);
+}
