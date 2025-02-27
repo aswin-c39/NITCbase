@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-RecId BlockAccess::linearSearch(int relId, char *attrName, Attribute attrVal, int op) {
+RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], Attribute attrVal, int op) {
         RecId prevRecId;
         RelCacheTable::getSearchIndex(relId, &prevRecId);
         int block = -1, slot = -1;
@@ -49,10 +49,10 @@ RecId BlockAccess::linearSearch(int relId, char *attrName, Attribute attrVal, in
 
             if(
                 (op == NE && cmpVal != 0) ||
-                (op == LT && cmpVal < 0) ||
+                (op == LT && cmpVal < 0)  ||
                 (op == LE && cmpVal <= 0) ||
                 (op == EQ && cmpVal == 0) ||
-                (op == GT && cmpVal > 0) ||
+                (op == GT && cmpVal > 0)  ||
                 (op == GE && cmpVal >= 0)
             ) {
                 RecId newRecId = {block, slot};
@@ -64,3 +64,4 @@ RecId BlockAccess::linearSearch(int relId, char *attrName, Attribute attrVal, in
         }
         return RecId{-1, -1};
 }
+

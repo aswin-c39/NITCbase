@@ -23,7 +23,7 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
 
     AttrCatEntry attrCatEntry;
     // get the attribute catalog entry for attr, using AttrCacheTable::getAttrcatEntry()
-  //    return E_ATTRNOTEXIST if it returns the erro
+    //    return E_ATTRNOTEXIST if it returns the error
     int ret = AttrCacheTable::getAttrCatEntry(srcRelId, attr, &attrCatEntry);
     if(ret == E_ATTRNOTEXIST)
         return E_ATTRNOTEXIST;
@@ -89,7 +89,7 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
         else   
             printf(" %s |", recordBuffer[i].sVal);
       }
-printf("\n");
+      printf("\n");
     } else {
       // (all records over)
       break;
