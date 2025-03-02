@@ -1,8 +1,10 @@
 #include "OpenRelTable.h"
-
 #include <cstring>
 #include <stdlib.h>
 #include <stdio.h>
+
+
+OpenRelTableMetaInfo OpenRelTable::tableMetaInfo[MAX_OPEN];
 
 AttrCacheEntry* createAttrCacheEntryList (int size) {
     AttrCacheEntry *head = nullptr, *curr = nullptr;
@@ -16,8 +18,6 @@ AttrCacheEntry* createAttrCacheEntryList (int size) {
 
     return head;
 }
-
-OpenRelTableMetaInfo OpenRelTable::tableMetaInfo[MAX_OPEN];
 
 OpenRelTable::OpenRelTable()
 {
@@ -35,7 +35,7 @@ OpenRelTable::OpenRelTable()
     //  and attribute catalog.)
 
     // setting up the variables
-    RecBuffer relCatBlock (RELCAT_BLOCK);
+    RecBuffer relCatBlock(RELCAT_BLOCK);
     Attribute relCatRecord [RELCAT_NO_ATTRS];
     RelCacheEntry *relCacheEntry = nullptr;
 
@@ -49,7 +49,6 @@ OpenRelTable::OpenRelTable()
 
         RelCacheTable::relCache[relId] = relCacheEntry;
     }
-
     
     /************ Setting up Attribute cache entries ************/
     // (we need to populate attribute cache with entries for the relation catalog
