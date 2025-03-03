@@ -126,7 +126,7 @@ int BlockAccess::renameRelation(char oldName[ATTR_SIZE], char newName[ATTR_SIZE]
     //    linearSearch on the attribute catalog for relName = oldRelationName
         searchIndex = BlockAccess::linearSearch(ATTRCAT_RELID, ATTRCAT_ATTR_RELNAME, oldRelationName, EQ);
     //    get the record using RecBuffer.getRecord
-        RecBuffer attrCatBlock(ATTRCAT_BLOCK);
+        RecBuffer attrCatBlock(searchindex.block);
         Attribute attrCatRecord[ATTRCAT_NO_ATTRS];
         attrCatBlock.getRecord(attrCatRecord, searchIndex.slot);
 
