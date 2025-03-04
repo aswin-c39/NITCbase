@@ -284,7 +284,7 @@ int BlockAccess::insert(int relId, Attribute *record) {
     {
         // if relation is RELCAT, do not allocate any more blocks
         //     return E_MAXRELATIONS;
-        if(relId = RELCAT_RELID)
+        if(relId == RELCAT_RELID)
             return E_MAXRELATIONS;
 
         // Otherwise,
@@ -292,15 +292,15 @@ int BlockAccess::insert(int relId, Attribute *record) {
         RecBuffer blockBuffer;
         // get the block number of the newly allocated block
         // (use BlockBuffer::getBlockNum() function)
-        int ret = blockBuffer.getBlockNum();
+        blockNum = blockBuffer.getBlockNum();
 
         // let ret be the return value of getBlockNum() function call
-        if (ret == E_DISKFULL) {
+        if (blockNum == E_DISKFULL) {
             return E_DISKFULL;
         }
 
         // Assign rec_id.block = new block number(i.e. ret) and rec_id.slot = 0
-        rec_id.block = ret;
+        rec_id.block = blockNum;
         rec_id.slot = 0;
 
         /*
@@ -339,7 +339,7 @@ int BlockAccess::insert(int relId, Attribute *record) {
         if(prevBlockNum != -1)
         {
             // create a RecBuffer object for prevBlockNum
-            RecBuffer prevBlockBuffer(prevBlockBuffer);
+            RecBuffer prevBlockBuffer(prevBlockNum);
             // get the header of the block prevBlockNum and
             HeadInfo prevBlockheader;
             prevBlockBuffer.getHeader(&prevBlockheader);
