@@ -125,7 +125,7 @@ int Schema::createRel(char relName[],int nAttrs, char attrs[][ATTR_SIZE],int att
     relCatRecord[RELCAT_NO_ATTRIBUTES_INDEX].nVal = nAttrs;
     relCatRecord[RELCAT_NO_RECORDS_INDEX].nVal = 0;
     relCatRecord[RELCAT_FIRST_BLOCK_INDEX].nVal = relCatRecord[RELCAT_LAST_BLOCK_INDEX].nVal = -1;
-    relCatRecord[RELCAT_NO_SLOTS_PER_BLOCK_INDEX].nVal = floor((2016 / (16 * nAttrs + 1)));
+    relCatRecord[RELCAT_NO_SLOTS_PER_BLOCK_INDEX].nVal = floor(((2016*1.00) / (16 * nAttrs + 1)));
 
     // retVal = BlockAccess::insert(RELCAT_RELID(=0), relCatRecord);
     int retVal = BlockAccess::insert(RELCAT_RELID, relCatRecord);
@@ -157,7 +157,7 @@ int Schema::createRel(char relName[],int nAttrs, char attrs[][ATTR_SIZE],int att
         attrCatRecord[ATTRCAT_OFFSET_INDEX].nVal = i; 
 
         // retVal = BlockAccess::insert(ATTRCAT_RELID(=1), attrCatRecord);
-        int retVal = BlockAccess::insert(ATTRCAT_RELID, relCatRecord);
+        int retVal = BlockAccess::insert(ATTRCAT_RELID, attrCatRecord);
 
         /* if attribute catalog insert fails:
              delete the relation by calling deleteRel(targetrel) of schema layer
