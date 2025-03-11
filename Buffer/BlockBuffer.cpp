@@ -8,7 +8,7 @@ BlockBuffer::BlockBuffer(char blockType){
     // given type using getFreeBlock function and get the return error codes if any.
     int blocktype = blockType == 'R' ? REC : UNUSED_BLK;
 
-    int blockNum = getFreeBlock(blockType);
+    int blockNum = getFreeBlock(blocktype);
 
     if(blockNum < 0 || blockNum >= DISK_BLOCKS) {
         printf("Error: Block is not available\n");
