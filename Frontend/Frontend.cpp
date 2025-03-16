@@ -75,6 +75,9 @@ int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], c
 
   ret = OpenRelTable::openRel("temp");
   if(ret < 0 || ret >= MAX_OPEN) return ret;
+
+  ret = Algebra::project("temp", relname_target, attr_count, attr_list);
+  if (ret != SUCCESS) return ret;
   
   Schema::closeRel("temp");
   Schema::deleteRel("temp");
