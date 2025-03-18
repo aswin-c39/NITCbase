@@ -229,7 +229,7 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], int tar_
     int srcRelId = OpenRelTable::getRelId(srcRel);
 
     // if srcRel is not open in open relation table, return E_RELNOTOPEN
-    if(srcRelId < 0 || srcRelId > MAX_OPEN) return E_RELNOTOPEN;
+    if(srcRelId < 0 || srcRelId >= MAX_OPEN) return E_RELNOTOPEN;
 
     // get RelCatEntry of srcRel using RelCacheTable::getRelCatEntry()
     RelCatEntry srcRelCatEntry;
@@ -260,7 +260,7 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], int tar_
    for(int i = 0; i < tar_nAttrs; i++) {
       AttrCatEntry attrCatBuffer;
       int ret = AttrCacheTable::getAttrCatEntry(srcRelId, tar_Attrs[i], &attrCatBuffer);
-      if(ret != SUCCESS) E_ATTRNOTEXIST;
+      if(ret != SUCCESS) return E_ATTRNOTEXIST;
 
       attrOffset[i] = attrCatBuffer.offset;
       attrTypes[i] = attrCatBuffer.attrType;
@@ -322,6 +322,7 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], int tar_
 
     return SUCCESS;
 }
+
 
 bool isNumber(char *str) {
     int len;

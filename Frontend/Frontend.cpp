@@ -71,18 +71,31 @@ int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], c
                                                char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
   // Algebra::select + Algebra::project??
   int ret = Algebra::select(relname_source, "temp", attribute, op, value);
-  if(ret != SUCCESS) return ret;
+  if(ret != SUCCESS) {
+  Schema::closeRel("temp");
+  Schema::deleteRel("temp");
+  return ret;
+  }
 
   ret = OpenRelTable::openRel("temp");
-  if(ret < 0 || ret >= MAX_OPEN) return ret;
+  if(ret < 0 || ret >= MAX_OPEN) {
+  Schema::closeRel("temp");
+  Schema::deleteRel("temp");
+  return ret;
+  }
 
   ret = Algebra::project("temp", relname_target, attr_count, attr_list);
-  if (ret != SUCCESS) return ret;
+  if (ret != SUCCESS) {
+  Schema::closeRel("temp");
+  Schema::deleteRel("temp");
+  return ret;
+  }
   
   Schema::closeRel("temp");
   Schema::deleteRel("temp");
   return SUCCESS;
 }
+
 
 int Frontend::select_from_join_where(char relname_source_one[ATTR_SIZE], char relname_source_two[ATTR_SIZE],
                                      char relname_target[ATTR_SIZE],

@@ -411,7 +411,7 @@ int BlockAccess::search(int relId, Attribute *record, char attrName[ATTR_SIZE], 
        For this Instantiate a RecBuffer class object using recId and
        call the appropriate method to fetch the record
     */
-   RecBuffer blockBuffer(recId.block);
+    RecBuffer blockBuffer(recId.block);
     blockBuffer.getRecord(record, recId.slot);
 
     return SUCCESS;
@@ -695,7 +695,7 @@ int BlockAccess::project(int relId, Attribute *record) {
             block = currentBlockheader.rblock;
             slot = 0;
         }
-        else if (slotMap[slot] = SLOT_UNOCCUPIED)
+        else if (slotMap[slot] == SLOT_UNOCCUPIED)
         { // (i.e slot-th entry in slotMap contains SLOT_UNOCCUPIED)
 
             // increment slot
