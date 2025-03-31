@@ -22,7 +22,7 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
     AttrCacheTable::getAttrCatEntry(relId, attrName, &attrCatEntry);
 
     // declare variables block and index which will be used during search
-    int block, index;
+    int block = -1, index = -1;
 
     if (searchIndex.block == -1 && searchIndex.index == -1) {
         // (search is done for the first time)
@@ -131,7 +131,7 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
                 if(
                     (op == EQ && cmpVal == 0) ||
                     (op == GE && cmpVal >= 0) ||
-                    (op == GT && cmpVal < 0) 
+                    (op == GT && cmpVal > 0) 
                 ) {
                     entryFound = true;
                     break;

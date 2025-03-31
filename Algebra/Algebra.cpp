@@ -135,9 +135,9 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
           return ret;
         }
     }
-    int normalCount = BlockAccess::getCompCount();
+    /* int normalCount = BlockAccess::getCompCount();
     int bPlusCount = BPlusTree::getCompCount();
-    printf("%d\n", normalCount == 0 ? bPlusCount : normalCount);
+    printf("%d\n", normalCount == 0 ? bPlusCount : normalCount); */
 
     // Close the targetRel by calling closeRel() method of schema layer
     Schema::closeRel(targetRel);
