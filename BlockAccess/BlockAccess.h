@@ -12,6 +12,8 @@ class BlockAccess {
  public:
   static int search(int relId, Attribute *record, char *attrName, Attribute attrVal, int op);
 
+  static int getCompCount();
+
   static int insert(int relId, union Attribute *record);
 
   static int renameRelation(char *oldName, char *newName);

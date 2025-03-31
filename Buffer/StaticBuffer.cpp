@@ -132,3 +132,13 @@ int StaticBuffer::setDirtyBit(int blockNum){
     // return SUCCESS
     return SUCCESS;
 }
+
+int StaticBuffer::getStaticBlockType(int blockNum){
+    // Check if blockNum is valid (non zero and less than number of disk blocks)
+    // and return E_OUTOFBOUND if not valid.
+    if(blockNum < 0 || blockNum >= DISK_BLOCKS) return blockNum;
+
+    // Access the entry in block allocation map corresponding to the blockNum argument
+    // and return the block type after type casting to integer.
+    return (int)blockAllocMap[blockNum];
+}

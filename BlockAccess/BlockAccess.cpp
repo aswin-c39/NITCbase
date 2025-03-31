@@ -2,12 +2,10 @@
 
 #include <cstring>
 
-inline bool operator == (RecId lhs, RecId rhs) {
-	return (lhs.block == rhs.block && lhs.slot == rhs.slot);
-}
+static int compCount = 0;
 
-inline bool operator != (RecId lhs, RecId rhs) {
-	return (lhs.block != rhs.block || lhs.slot != rhs.slot);
+int BlockAccess::getCompCount(){
+    return compCount;
 }
 
 RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], Attribute attrVal, int op) {
@@ -54,6 +52,7 @@ RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], Attribute a
             int attrOffset = attrCatBuffer.offset;
 
             int cmpVal = compareAttrs(record[attrOffset], attrVal, attrCatBuffer.attrType);
+            compCount++;
 
             if(
                 (op == NE && cmpVal != 0) ||
@@ -73,7 +72,7 @@ RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], Attribute a
         return RecId{-1, -1};
 }
 
-int BlockAccess::renameRelation(char oldName[ATTR_SIZE], char newName[ATTR_SIZE]){
+int BlockAccess:: renameRelation(char oldName[ATTR_SIZE], char newName[ATTR_SIZE]){
     /* reset the searchIndex of the relation catalog using
        RelCacheTable::resetSearchIndex() */
        RelCacheTable::resetSearchIndex(RELCAT_RELID);
@@ -413,24 +412,50 @@ int BlockAccess::search(int relId, Attribute *record, char attrName[ATTR_SIZE], 
     // Declare a variable called recid to store the searched record
     RecId recId;
 
-    /* search for the record id (recid) corresponding to the attribute with
-    attribute name attrName, with value attrval and satisfying the condition op
-    using linearSearch() */
-    recId = linearSearch(relId, attrName, attrVal, op);
-    // if there's no record satisfying the given condition (recId = {-1, -1})
-    //    return E_NOTFOUND;
-    if(recId.block == -1 && recId.block == -1)
-        return E_NOTFOUND;
+    /* get the attribute catalog entry from the attribute cache corresponding
+    to the relation with Id=relid and with attribute_name=attrName  */
+    AttrCatEntry attrCatBuffer;
+    int ret = AttrCacheTable::getAttrCatEntry(relId, attrName, &attrCatBuffer);
 
-    /* Copy the record with record id (recId) to the record buffer (record)
-       For this Instantiate a RecBuffer class object using recId and
+    // if this call returns an error, return the appropriate error code
+    if(ret != SUCCESS) return ret;
+
+    // get rootBlock from the attribute catalog entry
+    int rootBlock = attrCatBuffer.rootBlock;
+    /* if Index does not exist for the attribute (check rootBlock == -1) */ 
+    if(rootBlock == -1){
+
+        /* search for the record id (recid) corresponding to the attribute with
+           attribute name attrName, with value attrval and satisfying the
+           condition op using linearSearch()
+        */
+       recId = linearSearch(relId, attrName, attrVal, op);
+    }
+
+    else {
+        // (index exists for the attribute)
+
+        /* search for the record id (recid) correspoding to the attribute with
+        attribute name attrName and with value attrval and satisfying the
+        condition op using BPlusTree::bPlusSearch() */
+        recId = BPlusTree::bPlusSearch(relId, attrName, attrVal, op);
+    }
+
+
+    // if there's no record satisfying the given condition (recId = {-1, -1})
+    //     return E_NOTFOUND;
+    if(recId.block == -1 && recId.slot == -1) return E_NOTFOUND;
+
+    /* Copy the record with record id (recId) to the record buffer (record).
+       For this, instantiate a RecBuffer class object by passing the recId and
        call the appropriate method to fetch the record
     */
-    RecBuffer blockBuffer(recId.block);
-    blockBuffer.getRecord(record, recId.slot);
+   RecBuffer recordBuffer(recId.block);
+   recordBuffer.getRecord(record, recId.slot);
 
     return SUCCESS;
 }
+
 
 int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
     // if the relation to delete is either Relation Catalog or Attribute Catalog,

@@ -19,6 +19,7 @@ class BPlusTree {
  public:
   static int bPlusCreate(int relId, char attrName[ATTR_SIZE]);
   static int bPlusInsert(int relId, char attrName[ATTR_SIZE], union Attribute attrVal, RecId recordId);
+  static int getCompCount();
   static RecId bPlusSearch(int relId, char attrName[ATTR_SIZE], union Attribute attrVal, int op);
   static int bPlusDestroy(int rootBlockNum);
 };
