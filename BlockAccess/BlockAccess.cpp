@@ -400,7 +400,37 @@ int BlockAccess::insert(int relId, Attribute *record) {
     relCatBuffer.numRecs++;
     RelCacheTable::setRelCatEntry(relId, &relCatBuffer);
 
-    return SUCCESS;
+    /* B+ Tree Insertions */
+    // (the following section is only relevant once indexing has been implemented)
+
+    int flag = SUCCESS;
+    // Iterate over all the attributes of the relation
+    for(int attroffset = 0; attroffset < numOfAttributes; attroffset++)
+    {
+        // get the attribute catalog entry for the attribute from the attribute cache
+        // (use AttrCacheTable::getAttrCatEntry() with args relId and attrOffset)
+        AttrCatEntry attrCatEntry;
+        AttrCacheTable::getAttrCatEntry(relId, attroffset, &attrCatEntry);
+
+        // get the root block field from the attribute catalog entry
+        int rootBlock = attrCatEntry.rootBlock;
+
+        if(rootBlock != -1)
+        {
+            /* insert the new record into the attribute's bplus tree using
+             BPlusTree::bPlusInsert()*/
+            int retVal = BPlusTree::bPlusInsert(relId, attrCatEntry.attrName,
+                                                record[attroffset], rec_id);
+
+            if (retVal == E_DISKFULL) {
+                //(index for this attribute has been destroyed)
+                // flag = E_INDEX_BLOCKS_RELEASED
+                flag = E_INDEX_BLOCKS_RELEASED;
+            }
+        }
+    }
+
+    return flag;
 }
 
 /*
@@ -613,14 +643,15 @@ int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
             // call releaseBlock()
             attrCatBlockBuffer.releaseBlock();
         }
-        /*
+        
 
         // (the following part is only relevant once indexing has been implemented)
         // if index exists for the attribute (rootBlock != -1), call bplus destroy
         if (rootBlock != -1) {
             // delete the bplus tree rooted at rootBlock using BPlusTree::bPlusDestroy()
+            BPlusTree::bPlusDestroy(rootBlock);
         }
-        */
+        
     }
 
     /*** Delete the entry corresponding to the relation from relation catalog ***/
